@@ -18,10 +18,7 @@ class ViewSuiteServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom($basePath, 'view-suite');
 
-        $themes = config('view-suite.theme', [
-            'error' => config('view-suite.theme.error'),
-            'email' => config('view-suite.theme.email'),
-        ]);
+        $themes = config('view-suite.theme');
 
         View::composer('*', function ($view) use ($basePath, $themes) {
             $viewName = $view->name();
@@ -67,13 +64,23 @@ class ViewSuiteServiceProvider extends ServiceProvider
     protected function resolveThemedView($view, string $basePath, string $folder, string $theme): void
     {
         $name = str_replace("view-suite::{$folder}.", '', $view->name());
+
+        // O Laravel tenta "emails.index" → resolvemos para o tema configurado
         $customPath = "{$basePath}/{$folder}/{$theme}/{$name}.blade.php";
         $defaultPath = "{$basePath}/{$folder}/default/{$name}.blade.php";
-
+        if($folder === 'email'){
+            dd($customPath, File::exists($customPath));
+        }
+        // 🔹 Ajuste: Se o arquivo existe no tema atual, forçamos o caminho
         if (File::exists($customPath)) {
+
             $view->setPath($customPath);
         } elseif (File::exists($defaultPath)) {
             $view->setPath($defaultPath);
+        } else {
+            // fallback final — deixa o Laravel cuidar se nenhuma view foi encontrada
+            $view->setPath("{$basePath}/{$folder}/default/{$name}.blade.php");
         }
     }
+
 }
