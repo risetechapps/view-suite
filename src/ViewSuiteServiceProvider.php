@@ -56,6 +56,26 @@ class ViewSuiteServiceProvider extends ServiceProvider
         $this->app->singleton('view-suite', function () {
             return new ViewSuite;
         });
+
+        $this->app->extend('view.finder', function ($finder, $app) {
+            $paths = $finder->getPaths();
+
+            $extensions = (function () {
+                return $this->extensions;
+            })->call($finder);
+
+            $hints = (function () {
+                return $this->hints;
+            })->call($finder);
+
+            $themedFinder = new ThemedViewFinder($app['files'], $paths, $extensions);
+
+            foreach ($hints as $namespace => $namespacePaths) {
+                $themedFinder->addNamespace($namespace, $namespacePaths);
+            }
+
+            return $themedFinder;
+        });
     }
 
     /**
