@@ -2,6 +2,8 @@
 
 namespace RiseTechApps\ViewSuite;
 
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class ViewSuiteServiceProvider extends ServiceProvider
@@ -9,14 +11,40 @@ class ViewSuiteServiceProvider extends ServiceProvider
     /**
      * Bootstrap the application services.
      */
-    public function boot()
+    public function boot(): void
     {
+
+        $basePath = __DIR__ . '/../resources/views';
+
+        $this->loadViewsFrom($basePath, 'view-suite');
+
+        $themes = config('view-suite.theme', [
+            'error' => config('view-suite.theme.error'),
+            'email' => config('view-suite.theme.email'),
+        ]);
+
+        View::composer('*', function ($view) use ($basePath, $themes) {
+            $viewName = $view->name();
+
+            // 🔹 Erros
+            if (str_starts_with($viewName, 'view-suite::errors.')) {
+                $this->resolveThemedView($view, $basePath, 'errors', $themes['error']);
+            }
+
+            // 🔹 E-mails
+            if (str_starts_with($viewName, 'view-suite::emails.')) {
+                $this->resolveThemedView($view, $basePath, 'emails', $themes['email']);
+            }
+        });
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/config.php' => config_path('view-suite.php'),
+                __DIR__ . '/../config/config.php' => config_path('view-suite.php'),
             ], 'config');
 
+            $this->publishes([
+                $basePath => resource_path('views/vendor/view-suite'),
+            ], 'views');
         }
     }
 
@@ -31,5 +59,21 @@ class ViewSuiteServiceProvider extends ServiceProvider
         $this->app->singleton('view-suite', function () {
             return new ViewSuite;
         });
+    }
+
+    /**
+     * Resolve dinamicamente o caminho de uma view tematizada.
+     */
+    protected function resolveThemedView($view, string $basePath, string $folder, string $theme): void
+    {
+        $name = str_replace("view-suite::{$folder}.", '', $view->name());
+        $customPath = "{$basePath}/{$folder}/{$theme}/{$name}.blade.php";
+        $defaultPath = "{$basePath}/{$folder}/default/{$name}.blade.php";
+
+        if (File::exists($customPath)) {
+            $view->setPath($customPath);
+        } elseif (File::exists($defaultPath)) {
+            $view->setPath($defaultPath);
+        }
     }
 }
