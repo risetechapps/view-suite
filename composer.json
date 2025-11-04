@@ -1,0 +1,56 @@
+{
+    "name": "risetechapps/view-suite",
+    "description": "Pacote de views personalizadas da Rise Tech (erros, e-mails e layouts compartilhados).",
+    "keywords": ["risetechapps", "view-suite", "laravel", "views", "templates"],
+    "homepage": "https://github.com/risetechapps/view-suite",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Rise Tech",
+            "email": "apps@risetech.com.br",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/risetechapps/view-suite/issues",
+        "source": "https://github.com/risetechapps/view-suite"
+    },
+    "require": {
+        "php": "^8.3",
+        "illuminate/support": "^12.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0",
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "RiseTechApps\\ViewSuite\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "RiseTechApps\\ViewSuite\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "RiseTechApps\\ViewSuite\\ViewSuiteServiceProvider"
+            ],
+            "aliases": {
+                "ViewSuite": "RiseTechApps\\ViewSuite\\ViewSuiteFacade"
+            }
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
