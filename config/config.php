@@ -6,7 +6,7 @@
 return [
 
     'theme' => [
-        'error' => env('ERROR_THEME', 'default'),
-        'email' => env('EMAIL_THEME', 'default'),
+        'errors' => env('ERROR_THEME', 'default'),
+        'emails' => env('EMAIL_THEME', 'default'),
     ]
 ];
