@@ -18,22 +18,6 @@ class ViewSuiteServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom($basePath, 'view-suite');
 
-        $themes = config('view-suite.theme');
-
-        View::composer('*', function ($view) use ($basePath, $themes) {
-            $viewName = $view->name();
-
-            // 🔹 Erros
-            if (str_starts_with($viewName, 'view-suite::errors.')) {
-                $this->resolveThemedView($view, $basePath, 'errors', $themes['error']);
-            }
-
-            // 🔹 E-mails
-            if (str_starts_with($viewName, 'view-suite::emails.')) {
-                $this->resolveThemedView($view, $basePath, 'emails', $themes['email']);
-            }
-        });
-
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../config/config.php' => config_path('view-suite.php'),
@@ -76,31 +60,6 @@ class ViewSuiteServiceProvider extends ServiceProvider
 
             return $themedFinder;
         });
-    }
-
-    /**
-     * Resolve dinamicamente o caminho de uma view tematizada.
-     */
-    protected function resolveThemedView($view, string $basePath, string $folder, string $theme): void
-    {
-        $name = str_replace("view-suite::{$folder}.", '', $view->name());
-
-        // O Laravel tenta "emails.index" → resolvemos para o tema configurado
-        $customPath = "{$basePath}/{$folder}/{$theme}/{$name}.blade.php";
-        $defaultPath = "{$basePath}/{$folder}/default/{$name}.blade.php";
-        if($folder === 'email'){
-            dd($customPath, File::exists($customPath));
-        }
-        // 🔹 Ajuste: Se o arquivo existe no tema atual, forçamos o caminho
-        if (File::exists($customPath)) {
-
-            $view->setPath($customPath);
-        } elseif (File::exists($defaultPath)) {
-            $view->setPath($defaultPath);
-        } else {
-            // fallback final — deixa o Laravel cuidar se nenhuma view foi encontrada
-            $view->setPath("{$basePath}/{$folder}/default/{$name}.blade.php");
-        }
     }
 
 }
