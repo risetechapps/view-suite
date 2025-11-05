@@ -167,7 +167,7 @@
                                 <div
                                     style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-top:0px; padding-bottom:0px; padding-right: 0px; padding-left: 0px;">
 
-                                    @include('emails.themes.default.header_image')
+                                    @include('view-suite::emails.default.header_image')
                                     @yield('content')
                                 </div>
                             </div>
@@ -193,7 +193,7 @@
                                         <tr style="vertical-align: top;" valign="top">
                                             <td style="word-break: break-word; vertical-align: top; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px;"
                                                 valign="top">
-                                                @include('emails.themes.default.footer')
+                                                @include('view-suite::emails.default.footer')
                                             </td>
                                         </tr>
                                         </tbody>
