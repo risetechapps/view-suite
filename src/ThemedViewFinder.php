@@ -7,10 +7,7 @@ use InvalidArgumentException;
 
 class ThemedViewFinder extends FileViewFinder
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function findNamespacedView($name)
+    protected function findNamespacedView($name): string
     {
         [$namespace, $view] = $this->parseNamespaceSegments($name);
 
@@ -18,11 +15,11 @@ class ThemedViewFinder extends FileViewFinder
             $segments = explode('.', $view);
             $folder = array_shift($segments);
 
-            if ($folder && in_array($folder, ['emails', 'errors'], true)) {
+            if ($folder && in_array($folder, ['emails', 'errors','reports'], true)) {
                 $viewName = implode('.', $segments);
 
                 if ($viewName !== '') {
-                    $themeKey = $folder === 'emails' ? 'email' : 'error';
+                    $themeKey = $folder;
                     $theme = config("view-suite.theme.{$themeKey}", 'default');
                     $paths = $this->hints[$namespace] ?? [];
 
