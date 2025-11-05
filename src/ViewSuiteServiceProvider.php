@@ -18,6 +18,8 @@ class ViewSuiteServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom($basePath, 'view-suite');
 
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'view-suite');
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../config/config.php' => config_path('view-suite.php'),
