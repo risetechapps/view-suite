@@ -2,7 +2,7 @@
 <html lang="{{ app()->getLocale() }}">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - {{ __("view-suite::messages.Page Not Found") }}</title>
+    <title>419 - {{ __('view-suite::messages.Subresource not found') }}</title>
     <script src="https://cdn.tailwindcss.com/3.4.3"></script>
     <style>
         body {overflow: hidden;}
@@ -83,24 +83,21 @@
         <div class="relative mb-12">
             <h1 class="text-[120px] md:text-[180px] font-bold text-white tracking-tighter">
         <span class="relative">
-          <span class="absolute inset-0 text-purple-400 opacity-70 animate-glitch-1">404</span>
-          <span class="absolute inset-0 text-cyan-400 opacity-70 animate-glitch-2">404</span>
-          <span class="relative">404</span>
+          <span class="absolute inset-0 text-purple-400 opacity-70 animate-glitch-1">419</span>
+          <span class="absolute inset-0 text-cyan-400 opacity-70 animate-glitch-2">419</span>
+          <span class="relative">419</span>
         </span>
             </h1>
         </div>
 
         <!-- Main heading -->
         <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">
-            {{ __("view-suite::messages.Page Not Found") }}
+            {{ __("view-suite::messages.Subresource not found") }}
         </h2>
 
         <!-- Description -->
         <p class="text-gray-400 text-lg mb-10">
-            {{__("view-suite::messages.Oops! Looks like you got lost in outer space...")}}
-        </p>
-        <p class="text-gray-400 text-lg mb-10">
-            {{ __("view-suite::messages.The page you are looking for was not found in our galaxy.") }}
+            {{ __("view-suite::messages.Oops! We couldn't find the requested subresource.") }}
         </p>
     </div>
 
