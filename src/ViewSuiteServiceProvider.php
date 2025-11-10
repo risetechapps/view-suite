@@ -2,9 +2,10 @@
 
 namespace RiseTechApps\ViewSuite;
 
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\View;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\ServiceProvider;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Throwable;
 
 class ViewSuiteServiceProvider extends ServiceProvider
 {
@@ -61,6 +62,87 @@ class ViewSuiteServiceProvider extends ServiceProvider
             }
 
             return $themedFinder;
+        });
+
+        $this->registerPagesExceptions();
+    }
+
+    public function registerPagesExceptions(): void
+    {
+        $this->app->extend(ExceptionHandler::class, function ($handler, $app) {
+
+            return new class($handler) implements ExceptionHandler {
+                protected $handler;
+
+                public function __construct(ExceptionHandler $handler)
+                {
+                    $this->handler = $handler;
+                }
+
+                public function report(Throwable $e)
+                {
+                    return $this->handler->report($e);
+                }
+
+                public function shouldReport(Throwable $e)
+                {
+                    return $this->handler->shouldReport($e);
+                }
+
+                public function render($request, Throwable $e)
+                {
+                    if ($e instanceof HttpExceptionInterface) {
+                        $status = $e->getStatusCode();
+
+                        if ($status === 401) {
+                            return response()->view('view-suite::errors.401', [], 401);
+                        }
+
+                        if ($status === 402) {
+                            return response()->view('view-suite::errors.402', [], 402);
+                        }
+
+                        if ($status === 403) {
+                            return response()->view('view-suite::errors.403', [], 403);
+                        }
+
+                        if ($status === 404) {
+                            return response()->view('view-suite::errors.404', [], 404);
+                        }
+
+                        if ($status === 418) {
+                            return response()->view('view-suite::errors.418', [], 418);
+                        }
+
+                        if ($status === 419) {
+                            return response()->view('view-suite::errors.419', [], 419);
+                        }
+
+                        if ($status === 429) {
+                            return response()->view('view-suite::errors.429', [], 429);
+                        }
+
+                        if ($status === 500) {
+                            return response()->view('view-suite::errors.500', [], 500);
+                        }
+
+                        if ($status === 502) {
+                            return response()->view('view-suite::errors.502', [], 502);
+                        }
+
+                        if ($status === 503) {
+                            return response()->view('view-suite::errors.503', [], 503);
+                        }
+                    }
+
+                    return $this->handler->render($request, $e);
+                }
+
+                public function renderForConsole($output, Throwable $e)
+                {
+                    return $this->handler->renderForConsole($output, $e);
+                }
+            };
         });
     }
 
