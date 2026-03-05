@@ -2,7 +2,7 @@
 <html lang="{{ app()->getLocale() }}">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>502 - {{ __('view-suite::messages.Internal Server Error') }}</title>
+    <title>500 - {{ __('view-suite::messages.Internal Server Error') }}</title>
     <script src="https://cdn.tailwindcss.com/3.4.3"></script>
     <style>
         body {overflow: hidden;}
