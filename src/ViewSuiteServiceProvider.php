@@ -49,18 +49,18 @@ class ViewSuiteServiceProvider extends ServiceProvider
         });
 
         $this->app->extend('view.finder', function ($finder, $app) {
+            // 1. Pegamos tudo que o Finder original já conhece
             $paths = $finder->getPaths();
 
-            $extensions = (function () {
-                return $this->extensions;
-            })->call($finder);
+            // Usando Reflection ou acessando a propriedade se for pública no seu ThemedViewFinder
+            $hints = $finder->getHints();
 
-            $hints = (function () {
-                return $this->hints;
-            })->call($finder);
+            $extensions = (function () { return $this->extensions; })->call($finder);
 
+            // 2. Criamos o seu Finder temático
             $themedFinder = new ThemedViewFinder($app['files'], $paths, $extensions);
 
+            // 3. REPASSAMOS os hints (os namespaces dos packages como api-key::)
             foreach ($hints as $namespace => $namespacePaths) {
                 $themedFinder->addNamespace($namespace, $namespacePaths);
             }
