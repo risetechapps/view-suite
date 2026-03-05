@@ -5,6 +5,8 @@ namespace RiseTechApps\ViewSuite;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Support\Facades\Request;
 use Throwable;
 
 class ViewSuiteServiceProvider extends ServiceProvider
@@ -20,6 +22,8 @@ class ViewSuiteServiceProvider extends ServiceProvider
         $this->loadViewsFrom($basePath, 'view-suite');
 
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'view-suite');
+
+        $this->registerPagesExceptions();
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -63,8 +67,6 @@ class ViewSuiteServiceProvider extends ServiceProvider
 
             return $themedFinder;
         });
-
-        $this->registerPagesExceptions();
     }
 
     public function registerPagesExceptions(): void
@@ -91,6 +93,17 @@ class ViewSuiteServiceProvider extends ServiceProvider
 
                 public function render($request, Throwable $e)
                 {
+
+                    $status = $e instanceof HttpExceptionInterface ? $e->getStatusCode() : 500;
+
+                    if ($status === 500) {
+                        if (config('app.debug')) {
+                            return $this->handler->render($request, $e);
+                        }
+
+                        return response()->view('view-suite::errors.500', ['exception' => $e], 500);
+                    }
+
                     if ($e instanceof HttpExceptionInterface) {
                         $status = $e->getStatusCode();
 
@@ -145,5 +158,4 @@ class ViewSuiteServiceProvider extends ServiceProvider
             };
         });
     }
-
 }
