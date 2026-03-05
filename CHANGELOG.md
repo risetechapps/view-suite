@@ -2,6 +2,9 @@
 
 All notable changes to `view-suite` will be documented in this file
 
+## 1.2.0 - 2026-05-03
+- Corrigido view.finder
+
 ## 1.1.0 - 2026-05-03
 - Corrigido title da view 500
 - Corrigido verificação de erro
