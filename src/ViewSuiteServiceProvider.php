@@ -94,14 +94,14 @@ class ViewSuiteServiceProvider extends ServiceProvider
                 public function render($request, Throwable $e)
                 {
 
+                    if ($request->expectsJson() || $request->is('api/*')) {
+                        return $this->handler->render($request, $e);
+                    }
+
                     $status = $e instanceof HttpExceptionInterface ? $e->getStatusCode() : 500;
 
-                    if ($status === 500) {
-                        if (config('app.debug')) {
-                            return $this->handler->render($request, $e);
-                        }
-
-                        return response()->view('view-suite::errors.500', ['exception' => $e], 500);
+                    if ($status === 500 && config('app.debug')) {
+                        return $this->handler->render($request, $e);
                     }
 
                     if ($e instanceof HttpExceptionInterface) {
