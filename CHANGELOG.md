@@ -2,6 +2,9 @@
 
 All notable changes to `view-suite` will be documented in this file
 
+## 1.2.0 - 2026-04-30
+- Refatorado classe
+
 ## 1.1.1 - 2026-03-30
 - Implementado verificação de expectsJson
 
